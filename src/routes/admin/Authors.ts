@@ -1,5 +1,5 @@
 import { Router, Response, Request } from 'express';
-// import { pool } from '../../db/db';
+import { pool } from '../../db/db';
 
 const authorRouter = Router();
 
