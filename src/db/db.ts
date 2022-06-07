@@ -1,18 +1,16 @@
 import { Pool } from "pg";
 
-const envStr: string = JSON.stringify(process.env.NODE_ENV);
-const DB_URL: string = process.env.DATABASE_URL || "http://localhost:5432";
-const DB_USER: string = process.env.DB_USER || "pg";
-const DB_NAME: string = process.env.DB_NAME || "db_library";
-const DB_PASSWORD: string = process.env.DB_PASSWORD || "instrument";
+const envStr: string = String(process.env.NODE_ENV )|| 'development';
+const DB_URL: string = String(process.env.DATABASE_URL) || "http://localhost:5432";
+const DB_USER: string = String(process.env.DB_USER) || "postgres";
+const DB_NAME: string = String(process.env.DB_NAME) || "db_library";
+const DB_PASSWORD: string = String(process.env.DB_PASSWORD) || "instrument";
 const cxnStr = 
     process.env.NODE_ENV == 'development'
         ? `postgresql://${DB_USER}:${DB_PASSWORD}@${DB_URL}/${DB_NAME}`
         : DB_URL;
 
-export const pool = new Pool({
-    connectionString: cxnStr
-});
+export const pool = new Pool({connectionString: cxnStr});
 
 //~~~~~~~~~~~~~
 //  Log Check
