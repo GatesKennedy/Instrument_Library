@@ -1,6 +1,7 @@
 --  DB_NAME     DB_USER     DB_PASS     DB_PORT     ENCODING
 --  db_library  ohnodamn    instrument  5432        utf8
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+BEGIN;
 
 --  Clean
 DROP TABLE IF EXISTS tbl_authors            CASCADE;
@@ -18,8 +19,9 @@ CREATE TABLE IF NOT EXISTS tbl_authors(
     PRIMARY KEY(id)
 );
 
+
 CREATE TABLE IF NOT EXISTS tbl_books(
-    ISBN            ISBN13          NOT NULL,
+    ISBN            VARCHAR(17)     NOT NULL,
     title           VARCHAR(64)     NOT NULL,
     publisher       VARCHAR(64)     NOT NULL,
     yearPublished   SMALLINT        NOT NULL,
@@ -28,9 +30,17 @@ CREATE TABLE IF NOT EXISTS tbl_books(
 );
 
 CREATE TABLE IF NOT EXISTS lookup_bookAuthors(
-    ISBN        ISBN13      REFERENCES tbl_books(ISBN) ON DELETE CASCADE,
+    bookID      VARCHAR(17)      REFERENCES tbl_books(ISBN) ON DELETE CASCADE,
     authorID    UUID        REFERENCES tbl_authors(id) ON DELETE CASCADE,
-    PRIMARY KEY(ISBN, authorID)
+    PRIMARY KEY(bookID, authorID),
+    CONSTRAINT fk_author_ID
+        FOREIGN KEY(authorID) 
+            REFERENCES tbl_authors(id)
+	        ON DELETE CASCADE,
+    CONSTRAINT fk_book_ISBN
+        FOREIGN KEY(bookID) 
+            REFERENCES tbl_books(ISBN)
+	        ON DELETE CASCADE
 );
 
 -- Insert
@@ -56,11 +66,11 @@ VALUES
     ('356-3-16-434503-0',   'Sunlandic Twins',             'Legend and Myth',  '2006', 'Well... Bunny aint no kind of rider.'),
     ('457-3-16-456786-0',   'How I Know You Lose',         'Phenomenal Dissent', '1987', 'A collection of short stories about historical failures.'),
     ('247-3-16-345625-0',   'I Object!',                   'Phenomenal Dissent', '1934', 'A self help guide being a likeable person.'),
-    ('135-3-16-456258-0',   'Lemme Double Check',          'Phenomenal Dissent', '1986'),
-    ('321-3-16-789675-0',   'Nope. Nah. Pssh',             'Phenomenal Dissent', '1999', 'The art of making art is probably subjective, I would imagine.'),
+    ('135-3-16-456258-0',   'Lemme Double Check',          'Phenomenal Dissent', '1986', 'Everything is fine.'),
+    ('321-3-16-789675-0',   'Nope. Nah. Pssh',             'Phenomenal Dissent', '1999', 'The art of making art is probably subjective, I would imagine.')
 ;
 
-INSERT INTO lookup_bookAuthors(ISBN, authorID)
+INSERT INTO lookup_bookAuthors(bookID, authorID)
 VALUES 
     ('978-3-16-148410-0', 'ffabad35-6044-4150-b5ca-bf2eee5b5836'),
     ('234-3-16-304925-0', 'ef239e72-2d34-4ff3-bf3a-877546e89aee'),
@@ -76,12 +86,12 @@ VALUES
     ('247-3-16-345625-0', '5fcadfd9-25ff-44ca-99a0-232dc5bef701'),
     ('135-3-16-456258-0', 'ffabad35-6044-4150-b5ca-bf2eee5b5836'),
     ('135-3-16-456258-0', '97cf8e84-4c4d-42c7-97e5-c11415f85c8f'),
-    ('135-3-16-456258-0', 'ffabad35-6044-4150-b5ca-bf2eee5b5836'),
+    ('135-3-16-456258-0', '60ed4e42-43b8-4292-86c6-a038d4396750'),
     ('321-3-16-789675-0', '5fcadfd9-25ff-44ca-99a0-232dc5bef701')
 ;
 
-
-
 -- Index
-CREATE INDEX idx_ISBN       ON lookup_bookAuthors(ISBN);
+CREATE INDEX idx_bookID     ON lookup_bookAuthors(bookID);
 CREATE INDEX idx_authorID   ON lookup_bookAuthors(authorID);
+
+COMMIT;

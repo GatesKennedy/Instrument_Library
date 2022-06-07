@@ -10,9 +10,9 @@ const app = express();
 //~~~~~~~~~~~~~~~~~~~~~~~
 //      ROUTES
 //~~~~~~~~~~~~~~~~~~~~~~~
-app.use('./routes/admin/Authors.ts', authorRouter);
-app.use('./routes/admin/Books.ts', bookRouter);
-app.use('./routes/search/Search.ts', searchRouter);
+app.use('./api/admin/authors', authorRouter);
+app.use('./api/admin/books', bookRouter);
+app.use('./api/search/', searchRouter);
 
 //~~~~~~~~~~~~~~~~~~~~~~~
 //    Server Init
